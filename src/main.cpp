@@ -6,6 +6,9 @@ int main(){
     sf::RenderWindow window(sf::VideoMode(800,800),"Chef Cocomo's Chess Game");
     sf::RectangleShape screen1;
     sf::RectangleShape b1,b2,b3;
+    sf::RectangleShape bord;
+    bord.setSize(Vector2f(800,600));
+    
     b1.setSize(Vector2f(220,110));
     b2.setSize(Vector2f(220,110));
     b3.setSize(Vector2f(220,110));
@@ -30,6 +33,18 @@ int main(){
       text3.setPosition(Vector2f(595,680));
       text3.setStyle(Text::Bold);
       
+      sf::RectangleShape brd[8][8];
+      for(int i=0;i<7; i++){
+         for(int j=0; j<8; j++){
+            brd[i][j].setSize(Vector2f(75,100));
+            brd[i][j].setFillColor(Color::Transparent);
+          
+            brd[i][j].setPosition(Vector2f(75*i,100*j));
+
+         }
+      }
+
+      
 
 
    
@@ -37,6 +52,9 @@ int main(){
    
     sf::Texture t1;
     sf::Texture t2;
+    sf::Texture board;
+    board.loadFromFile("assests/board.png");
+    bord.setTexture(&board);
     t2.loadFromFile("button.png");
 
     t1.loadFromFile("screen1.png");
@@ -53,30 +71,71 @@ int main(){
      b1.setPosition(Vector2f(50,640));
      b2.setPosition(Vector2f(300,640));
      b3.setPosition(Vector2f(550,640));
+     int i=0;
+     int currscr=0;
     while(window.isOpen()){
         sf::Event event;
         while(window.pollEvent(event)){
             if(event.type==Event::Closed){
                 window.close();
             }
+            if(currscr==1){
+
+            }
+            
+            if(currscr==0){
+            if(event.type==Event::KeyPressed){
+
+               if(event.key.code==Keyboard::Left){
+                 
+                  i--;
+                  if(i<1) i=1;
+
+               }
+                if(event.key.code==Keyboard::Right){
+                 
+                  i++;
+                  if(i>3) i=1;
+
+               }
+               
+               if(event.key.code==Keyboard::Enter && i==1){
+                  currscr=1;
+               }
+            
+            }
+            if(event.type==Event::MouseButtonPressed){
+               if(event.mouseButton.button==Mouse::Right){
+                  currscr=1;
+               }
+            }
+         }
         }
+        
          c=Mouse::getPosition(window);
-         if(b1.getGlobalBounds().contains(c.x,c.y)){
+         if(currscr==0){
+              if(b1.getGlobalBounds().contains(c.x,c.y)){
+               i=1;
+              }
+              if(b2.getGlobalBounds().contains(c.x,c.y)){
+               i=2;
+              }
+              if(b3.getGlobalBounds().contains(c.x,c.y)){
+               i=3;
+              }
+         text3.setFillColor(Color::White);
+         text2.setFillColor(Color::White);
+         text1.setFillColor(Color::White);
+         if(i==1){
             text1.setFillColor(sf::Color(60, 40, 20));
-         }else{
-            text1.setFillColor(Color::White);
          }
-          if(b2.getGlobalBounds().contains(c.x,c.y)){
+          else if(i==2){
             text2.setFillColor(sf::Color(60, 40, 20));
-         }else{
-            text2.setFillColor(Color::White);
          }
-          if(b3.getGlobalBounds().contains(c.x,c.y)){
+        else  if(i==3){
             text3.setFillColor(sf::Color(60, 40, 20));
-         }else{
-            text3.setFillColor(Color::White);
          }
-    cout<<c.x<<"  "<<c.y<<endl;
+    
 
         window.clear();
         window.draw(screen1);
@@ -87,7 +146,24 @@ int main(){
         window.draw(text2);
         window.draw(text3);
         window.display();
+      }else if(currscr==1){
+          c=Mouse::getPosition(window);
+          int x=c.x/100;
+          int y=c.y/100;
+        
+         window.clear();
+         window.draw(screen1);
+         window.draw(bord);
+         for(int i=0; i<8; i++){
+            for(int j=0;j<8; j++){
+               window.draw(brd[i][j]);
+            }
+         }
+         window.display();
+      }
+      
     }
+
     
 
 }
